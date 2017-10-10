@@ -69,14 +69,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-            } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSION);
             }
         } else {
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient,locationRequest, this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
         }
     }
 
@@ -107,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
-                    LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient,locationRequest,this);
+                    LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
                 }
                 return;
             }
