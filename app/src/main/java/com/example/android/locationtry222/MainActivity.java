@@ -81,14 +81,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-            } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSION);
             }
         } else {
-            location =LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             locationView.setText(String.valueOf(location.getLatitude()));
         }
     }
