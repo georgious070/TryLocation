@@ -14,14 +14,17 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
 
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks, LocationListener {
+        GoogleApiClient.ConnectionCallbacks, com.google.android.gms.location.LocationListener {
 
     private GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
     private Location location;
     private static final int MY_PERMISSION = 1;
     private TextView locationView;
@@ -52,27 +55,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         googleApiClient.disconnect();
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        locationRequest = LocationRequest.create()
+                .setInterval(1000)
+                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -81,14 +69,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
+            } else {
+                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSION);
             }
         } else {
-            location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            locationView.setText(String.valueOf(location.getLatitude()));
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        locationView.setText(Double.toString(location.getLatitude()));
     }
 
     @Override
@@ -113,8 +107,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
-                    location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-                    locationView.setText(String.valueOf(location.getLatitude()));
+                    LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
                 }
                 return;
             }
